@@ -14,10 +14,13 @@ Show enough trust, clarity, and motivation that they're willing to commit to a 6
 
 After landing page we have more sections upcoming but for now build the landing section only. background colour will be black #000. do not add any images from the screenshot, use it just as an inspiration for the content positioning and replace it with our content.
 Add social media hover buttons in the footer
+
 **PROMPT2-**
 keep the main section in the centre of the initial opening page remove the "your daily proof of work and instead add a section which talks more about AB Talks because This is a website Intended towards students who have never heard of AB talks and this description must tell everything about us what we do and what we are here for.
+
 **Prompt-3**
 used a bold, high-impact sans-serif font (Inter at 600weight) to command attention. for the main headline
+
 **Prompt-4**
 make the headline only in 2 lines and increase the font size suitably to copensate the space freed up. also add rotating text anumation to the bottom headline along with the preapplied dynamic color changing animations
  
