@@ -1,0 +1,10 @@
+/* Rewards Page Stylesheet */
+
+.btn-redeem {
+    border: none;
+    outline: none;
+}
+
+.btn-redeem:active {
+    transform: scale(0.98);
+}

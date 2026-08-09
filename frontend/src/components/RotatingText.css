@@ -1,0 +1,44 @@
+.rt-container {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 1.15em;
+  vertical-align: bottom;
+}
+
+.rt-text {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* Entry: slide up from below */
+.rt-enter {
+  animation: rt-slide-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Exit: slide up and out */
+.rt-exit {
+  animation: rt-slide-out 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes rt-slide-in {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes rt-slide-out {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
