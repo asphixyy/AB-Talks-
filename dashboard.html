@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABTalks - Student Dashboard</title>
+    <meta name="description" content="Manage your public learning streak, view code contributions, standing, and rewards.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;400;600;700&family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Specific dashboard overrides to support direct landing features */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 4rem;
+            position: relative;
+        }
+
+        /* Override glassmorphism for simple and clean cards */
+        .liquid-glass {
+            background: #141414 !important;
+            border: 1px solid #262626 !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .dashboard-user h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .dashboard-user p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .stat-card-value {
+            font-family: 'Anton', sans-serif;
+            font-size: 2.2rem;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .stat-card-value span {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0;
+            margin-left: 6px;
+        }
+
+        .stat-card-footer {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .stat-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .icon-streak {
+            background: rgba(255, 94, 0, 0.1) !important;
+            color: var(--accent-orange) !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
+
+        .icon-progress {
+            position: relative;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-progress svg {
+            transform: rotate(-90deg);
+            width: 3.5rem;
+            height: 3.5rem;
+        }
+
+        .icon-progress circle {
+            fill: none;
+            stroke-width: 4.5;
+        }
+
+        .icon-progress .bg-circle {
+            stroke: rgba(255, 255, 255, 0.06);
+        }
+
+        .icon-progress .val-circle {
+            stroke: var(--accent-yellow);
+            stroke-dasharray: 176;
+            stroke-dashoffset: 118; /* 33% completion offset */
+        }
+
+        .progress-label {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-yellow);
+        }
+
+        .icon-standing {
+            background: rgba(255, 42, 0, 0.1) !important;
+            color: var(--accent-red) !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard-card {
+            padding: 1.8rem;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .card-header p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Heatmap Grid */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .heatmap-cell.active-1 { background: #064e3b; border-color: #065f46; box-shadow: none; }
+        .heatmap-cell.active-2 { background: #047857; border-color: #059669; box-shadow: none; }
+        .heatmap-cell.active-3 { background: #34d399; border-color: #6ee7b7; box-shadow: none; }
+
+        .heatmap-cell::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 9px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            z-index: 100;
+        }
+
+        .heatmap-cell:hover::after {
+            opacity: 1;
+        }
+
+        .heatmap-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-secondary);
+            padding: 0.5rem 0 0;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* Achievements */
+        .badges-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .badge-item {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-stripe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+        }
+
+        .badge-icon {
+            width: 2.8rem;
+            height: 2.8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .badge-item h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .badge-item p {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Tasks */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .task-item {
+            display: flex;
+            gap: 12px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-items: flex-start;
+        }
+
+        .task-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .task-item.completed {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.25);
+            color: #a7f3d0;
+        }
+
+        .task-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        .task-item.completed .task-check {
+            border-color: #34d399;
+            color: #34d399;
+        }
+
+        .task-item.completed .task-check::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+        .task-desc {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-desc span {
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .task-item.completed .task-desc span {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .task-reward {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Scorecard metrics */
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .metric-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .metric-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 6px;
+        }
+
+        /* Dropdown style */
+        .logo-dropdown {
+            display: none; 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            margin-top: 14px; 
+            width: 200px; 
+            background: #0c0c0c; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 16px; 
+            padding: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            z-index: 99999; 
+            flex-direction: column; 
+            gap: 4px; 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 14px;
+        }
+
+        .logo-dropdown.active {
+            display: flex !important;
+        }
+
+        .dropdown-item {
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 10px; 
+            border-radius: 12px; 
+            text-decoration: none; 
+            color: rgba(255,255,255,0.7); 
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .dropdown-item.active {
+            color: #ffffff; 
+            font-weight: 600; 
+            background: var(--accent-orange);
+            box-shadow: 0 0 12px rgba(255,94,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow-orb orb-primary"></div>
+        <div class="glow-orb orb-secondary"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="navbar liquid-glass-nav">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; padding: 0; outline: none;">
+            <img src="frontend/src/assets/fed689f4-3fea-42a8-9c6e-21e5546265e5.png" alt="ABTalks Logo" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px;">
+            <span><span class="logo-accent">AB</span>Talks</span>
+        </a>
+        <button id="navUserBtn" class="nav-cta" style="cursor: pointer; background: none; font-family: inherit;">Hey, Coder</button>
+    </nav>
+
+    <!-- Floating Bottom Liquid Glass Navbar -->
+    <div class="bottom-nav-container">
+        <div class="bottom-nav-dock">
+            <div id="navIndicator" class="bottom-nav-indicator"></div>
+            
+            <!-- Dashboard Link -->
+            <a href="dashboard.html" class="bottom-nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span class="bottom-nav-label">Dashboard</span>
+            </a>
+            
+            <!-- Challenge Link -->
+            <a href="day.html" class="bottom-nav-item">
+                <i class="fa-solid fa-calendar-day"></i>
+                <span class="bottom-nav-label">Challenge</span>
+            </a>
+
+            <!-- Rewards Link -->
+            <a href="rewards.html" class="bottom-nav-item">
+                <i class="fa-solid fa-dollar-sign"></i>
+                <span class="bottom-nav-label">Rewards</span>
+            </a>
+            
+            <!-- Account Details Button -->
+            <button id="bottomAccountBtn" class="bottom-nav-item logout">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="bottom-nav-label">Account</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Content Area -->
+    <div class="dashboard-container">
+        
+        <!-- Welcome banner header (Flat Layout) -->
+        <div class="dashboard-header liquid-glass">
+            <div class="dashboard-user">
+                <h1 id="welcomeUserTitle">Welcome Back, Coder!</h1>
+                <p>Cohort 1 • Ghaziabad Hub • SDE Track</p>
+            </div>
+            <div class="dashboard-actions">
+                <button id="logoutBtn" class="logout-btn">Log Out <i class="fa-solid fa-arrow-right-from-bracket" style="margin-left: 6px;"></i></button>
+            </div>
+        </div>
+
+        <!-- Metrics Streaks Grid -->
+        <div class="stats-grid">
+            
+            <!-- Streak Card -->
+            <div class="stat-card liquid-glass">
+                <div>
+                    <span class="stat-card-title">Current Streak</span>
+                    <div class="stat-card-value" style="color: var(--accent-orange);">
+                        20<span>Days</span>
+                    </div>
+                    <p class="stat-card-footer">Next milestone: 21 Days (Bronze Badge)</p>
+                </div>
+                <div class="stat-icon icon-streak">
+                    <i class="fa-solid fa-fire-flame-curved"></i>
+                </div>
+            </div>
+
+            <!-- Progress Card -->
+            <div class="stat-card liquid-glass" onclick="window.location.href='day.html'" style="cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.borderColor='rgba(255,183,0,0.4)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255,255,255,0.08)';">
+                <div>
+                    <span class="stat-card-title">Overall Completion</span>
+                    <div class="stat-card-value" style="color: var(--accent-yellow);">
+                        33%<span>Finished</span>
+                    </div>
+                    <p class="stat-card-footer">20 of 60 days committed successfully</p>
+                </div>
+                <div class="stat-icon icon-progress">
+                    <svg>
+                        <circle class="bg-circle" cx="28" cy="28" r="24" />
+                        <circle class="val-circle" cx="28" cy="28" r="24" />
+                    </svg>
+                    <span class="progress-label">20/60</span>
+                </div>
+            </div>
+
+            <!-- Standings Card -->
+            <div class="stat-card liquid-glass">
+                <div>
+                    <span class="stat-card-title">Student Standing</span>
+                    <div class="stat-card-value" style="color: var(--accent-red);">
+                        Top 4%<span>Ranking</span>
+                    </div>
+                    <p class="stat-card-footer">Consistent Coder League leader</p>
+                </div>
+                <div class="stat-icon icon-standing">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Layout Grid -->
+        <div class="layout-grid">
+            
+            <!-- Left Side Column -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Heatmap Tracker -->
+                <div class="dashboard-card liquid-glass">
+                    <div class="card-header">
+                        <h2>60-Day Progress Heatmap</h2>
+                        <p>Visualize your commit status. Keep the streak active!</p>
+                    </div>
+                    <div class="heatmap-grid" id="heatmapGrid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <div class="heatmap-footer">
+                        <span>Day 1</span>
+                        <div class="heatmap-legend">
+                            <span>Less</span>
+                            <div class="legend-box" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05)"></div>
+                            <div class="legend-box" style="background: #064e3b; border: 1px solid #065f46"></div>
+                            <div class="legend-box" style="background: #047857; border: 1px solid #059669"></div>
+                            <div class="legend-box" style="background: #34d399; border: 1px solid #6ee7b7"></div>
+                            <span>More</span>
+                        </div>
+                        <span>Day 60</span>
+                    </div>
+                </div>
+
+                <!-- Achievements Card -->
+                <div class="dashboard-card liquid-glass">
+                    <div class="card-header">
+                        <h2>Unlocked Badges</h2>
+                        <p>Claim your standing achievements</p>
+                    </div>
+                    <div class="badges-row">
+                        <!-- Badge 1 -->
+                        <div class="badge-item">
+                            <div class="badge-stripe" style="background: var(--accent-orange);"></div>
+                            <div class="badge-icon" style="background: rgba(255,94,0,0.1); color: var(--accent-orange); border: 1px solid rgba(255,94,0,0.2);">
+                                <i class="fa-solid fa-flag"></i>
+                            </div>
+                            <h4>Streak Starter</h4>
+                            <p>Committed first 5 consecutive days</p>
+                        </div>
+                        <!-- Badge 2 -->
+                        <div class="badge-item">
+                            <div class="badge-stripe" style="background: var(--accent-yellow);"></div>
+                            <div class="badge-icon" style="background: rgba(255,224,0,0.1); color: var(--accent-yellow); border: 1px solid rgba(255,224,0,0.2);">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </div>
+                            <h4>Visibility Star</h4>
+                            <p>Shared 10 daily learning summaries</p>
+                        </div>
+                        <!-- Badge 3 -->
+                        <div class="badge-item" style="opacity: 0.4;">
+                            <div class="badge-icon" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5)">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <h4>Elite Finisher</h4>
+                            <p>Complete all 60 days (Locked)</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side Column -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Daily Tasks Card -->
+                <div class="dashboard-card liquid-glass">
+                    <div class="card-header">
+                        <h2>Today's Tasks</h2>
+                        <p>Complete daily tasks to update your standings</p>
+                    </div>
+                    <div class="task-list">
+                        <!-- Task 1 -->
+                        <div class="task-item" data-task-id="commit" data-points="10">
+                            <div class="task-check"></div>
+                            <div class="task-desc">
+                                <span>Push a GitHub commit for today's project</span>
+                                <div class="task-reward"><i class="fa-solid fa-coins"></i> +10 Coins</div>
+                            </div>
+                        </div>
+                        <!-- Task 2 -->
+                        <div class="task-item" data-task-id="post" data-points="15">
+                            <div class="task-check"></div>
+                            <div class="task-desc">
+                                <span>Share your milestone update on LinkedIn</span>
+                                <div class="task-reward"><i class="fa-solid fa-coins"></i> +15 Coins</div>
+                            </div>
+                        </div>
+                        <!-- Task 3 -->
+                        <div class="task-item" data-task-id="dsa" data-points="15">
+                            <div class="task-check"></div>
+                            <div class="task-desc">
+                                <span>Solve 1 DSA Problem on LeetCode/GFG</span>
+                                <div class="task-reward"><i class="fa-solid fa-coins"></i> +15 Coins</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Scorecard -->
+                <div class="dashboard-card liquid-glass">
+                    <div class="card-header">
+                        <h2>SDE Competence Score</h2>
+                        <p>Performance breakdown of your public learning streak</p>
+                    </div>
+                    <div class="metrics-list">
+                        <!-- Metric 1 -->
+                        <div class="metric-row">
+                            <div class="metric-header">
+                                <span>Coding Consistency</span>
+                                <span style="color: var(--accent-orange)">85%</span>
+                            </div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="background: var(--accent-orange); width: 85%;"></div>
+                            </div>
+                        </div>
+                        <!-- Metric 2 -->
+                        <div class="metric-row">
+                            <div class="metric-header">
+                                <span>Public Visibility (LinkedIn)</span>
+                                <span style="color: var(--accent-yellow)">75%</span>
+                            </div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="background: var(--accent-yellow); width: 75%;"></div>
+                            </div>
+                        </div>
+                        <!-- Metric 3 -->
+                        <div class="metric-row">
+                            <div class="metric-header">
+                                <span>System Design & QA</span>
+                                <span style="color: var(--accent-red)">60%</span>
+                            </div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="background: var(--accent-red); width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check auth status
+            const registeredUser = localStorage.getItem('registeredUser');
+            if (!registeredUser) {
+                localStorage.setItem('promptRegister', 'true');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const firstName = registeredUser.trim().split(' ')[0];
+            document.getElementById('welcomeUserTitle').textContent = `Welcome Back, ${firstName}!`;
+            const navUserBtn = document.getElementById('navUserBtn');
+            if (navUserBtn) navUserBtn.textContent = `Hey, ${firstName}`;
+
+            const logoutHandler = () => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            };
+
+            // Log out handler
+            document.getElementById('logoutBtn').addEventListener('click', logoutHandler);
+            const bottomLogoutBtn = document.getElementById('bottomLogoutBtn');
+            
+            // Floating Bottom Nav Sweep Animation
+            const navIndicator = document.getElementById('navIndicator');
+            const navItems = document.querySelectorAll('.bottom-nav-item');
+            
+            function updateIndicator(activeEl) {
+                if (navIndicator && activeEl) {
+                    navIndicator.style.left = activeEl.offsetLeft + 'px';
+                    navIndicator.style.width = activeEl.offsetWidth + 'px';
+                    if (activeEl.classList.contains('logout')) {
+                        navIndicator.style.background = '#ef4444';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(239, 68, 68, 0.3)';
+                    } else {
+                        navIndicator.style.background = '#ffffff';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.12)';
+                    }
+                }
+            }
+
+            // Init active position
+            const activeItem = document.querySelector('.bottom-nav-item.active');
+            if (activeItem) {
+                setTimeout(() => updateIndicator(activeItem), 50);
+                if (document.fonts) {
+                    document.fonts.ready.then(() => {
+                        updateIndicator(activeItem);
+                    });
+                }
+            }
+
+            // Click handling with sweep redirect delay
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (item.tagName === 'A') {
+                        e.preventDefault();
+                        const href = item.getAttribute('href');
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 350);
+                    } else if (item.id === 'bottomAccountBtn') {
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            // Populate values
+                            document.getElementById('accName').textContent = localStorage.getItem('registeredUser') || 'Shivam Gupta';
+                            
+                            // Format date nicely
+                            const dob = localStorage.getItem('userDob');
+                            if (dob) {
+                                const d = new Date(dob);
+                                document.getElementById('accDob').textContent = d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                            } else {
+                                document.getElementById('accDob').textContent = '15th August 2004';
+                            }
+                            
+                            document.getElementById('accEmail').textContent = localStorage.getItem('userEmail') || 'shivam@gmail.com';
+                            document.getElementById('accCity').textContent = localStorage.getItem('userCity') || 'Ghaziabad';
+                            
+                            // Open Modal
+                            const accountModal = document.getElementById('accountModal');
+                            if (accountModal) accountModal.classList.add('active');
+                        }, 350);
+                    }
+                });
+            });
+
+            // Close Account Modal handlers
+            const accountModal = document.getElementById('accountModal');
+            const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+            if (closeAccountModalBtn) {
+                closeAccountModalBtn.addEventListener('click', () => {
+                    if (accountModal) accountModal.classList.remove('active');
+                });
+            }
+            if (accountModal) {
+                accountModal.addEventListener('click', (e) => {
+                    if (e.target === accountModal) {
+                        accountModal.classList.remove('active');
+                    }
+                });
+            }
+
+            // Populate mock GitHub heatmap
+            const heatmapGrid = document.getElementById('heatmapGrid');
+            if (heatmapGrid) {
+                for (let i = 1; i <= 60; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell';
+                    
+                    const completedDaysCount = parseInt(localStorage.getItem('completedDaysCount') || '20');
+                    let level = 0;
+                    if (i <= completedDaysCount) {
+                        level = (i % 3) + 1;
+                    }
+                    if (level > 0) {
+                        cell.classList.add(`active-${level}`);
+                    }
+                    
+                    cell.setAttribute('data-tooltip', `Day ${i}: ${level === 0 ? 'No commits' : level * 2 + ' commits'}`);
+                    heatmapGrid.appendChild(cell);
+                }
+            }
+
+            // Sync checklist checks and coins in LocalStorage
+            let coins = parseInt(localStorage.getItem('userCoins') || '150');
+            const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{"commit":false,"post":false,"dsa":false}');
+
+            const taskItems = document.querySelectorAll('.task-item');
+            taskItems.forEach(item => {
+                const taskId = item.getAttribute('data-task-id');
+                const points = parseInt(item.getAttribute('data-points'));
+                
+                if (completedTasks[taskId]) {
+                    item.classList.add('completed');
+                }
+
+                item.addEventListener('click', () => {
+                    const isCompleted = item.classList.toggle('completed');
+                    completedTasks[taskId] = isCompleted;
+                    
+                    if (isCompleted) {
+                        coins += points;
+                    } else {
+                        coins -= points;
+                    }
+                    localStorage.setItem('userCoins', coins.toString());
+                    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+                });
+            });
+        });
+    </script>
+
+    <!-- Account Details Modal -->
+    <div id="accountModal" class="modal-overlay">
+        <div class="modal-content liquid-glass" style="max-width: 400px; text-align: left;">
+            <button id="closeAccountModalBtn" class="modal-close">&times;</button>
+            <div class="modal-header" style="margin-bottom: 24px;">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-user-gear text-accent-orange"></i> Account Details
+                </h2>
+                <p>Verify your cohort membership credentials</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: rgba(255, 255, 255, 0.8);">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Full Name</span>
+                    <strong style="color: #ffffff; font-size: 1.05rem;" id="accName">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Date of Birth</span>
+                    <strong style="color: #ffffff;" id="accDob">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Email Address</span>
+                    <strong style="color: #ffffff;" id="accEmail">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">City / Hub</span>
+                    <strong style="color: #ffffff;" id="accCity">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Program Track</span>
+                    <strong style="color: var(--accent-orange);">Software Development (SDE)</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

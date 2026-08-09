@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ABTalks - 60-Day Coding Challenge</title>
+    <meta name="description" content="ABTalks runs a 60-day coding challenge for Indian college students. Build consistency and become visible to recruiters.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="frontend/src/assets/fed689f4-3fea-42a8-9c6e-21e5546265e5.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css?v=7">
+</head>
+<body>
+    <!-- Video Loader -->
+    <div id="video-loader">
+        <video src="frontend/src/assets/VID_20260809_115255.mp4" autoplay muted playsinline id="loader-video"></video>
+        <!-- Loader Bar -->
+        <div class="loader-bar-container">
+            <div class="loader-bar-fill"></div>
+        </div>
+    </div>
+
+    <div class="background-effects">
+        <div class="glow-orb orb-primary"></div>
+        <div class="glow-orb orb-secondary"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Navigation Header -->
+
+    <nav class="navbar">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; padding: 0; outline: none;">
+            <img src="frontend/src/assets/fed689f4-3fea-42a8-9c6e-21e5546265e5.png" alt="ABTalks Logo" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px;">
+            <span><span class="logo-accent">AB</span>Talks</span>
+        </a>
+        <button id="openModalBtn" class="nav-cta" style="cursor: pointer; background: none; font-family: inherit;">Join Now</button>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge-wrapper">
+                    <div class="badge">
+                        <span class="badge-dot"></span> 60-Day Coding Challenge
+                    </div>
+                </div>
+                
+                <h1 class="hero-title">Connecting Leaders.<br>
+                    <span id="rotate-decode"></span>
+                </h1>
+                <p class="hero-subtitle">Build something every day, submit a <strong>GitHub commit</strong> & a <strong>LinkedIn post</strong>.<br>
+                Maintain your public learning streak, build consistency, and become visible to top recruiters.</p>
+                
+                <div class="hero-actions">
+                    <button id="heroOpenModalBtn" class="btn" style="cursor: pointer;">Commit to 60 Days <i class="fa-solid fa-arrow-right"></i></button>
+                    <p class="trust-indicator">
+                        <span class="avatars">
+                            <img src="https://i.pravatar.cc/100?img=1" alt="Student" class="avatar">
+                            <img src="https://i.pravatar.cc/100?img=2" alt="Student" class="avatar">
+                            <img src="https://i.pravatar.cc/100?img=3" alt="Student" class="avatar">
+                        </span>
+                        Join 10,000+ Indian College Students
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="about-container liquid-glass">
+                <div class="about-header">
+                    <span class="badge-dot pulse-dot"></span>
+                    <h2>What is ABTalks?</h2>
+                </div>
+                <h3 class="about-title">Empowering the Next Generation of Tech Leaders</h3>
+                <div class="about-text">
+                    <p>
+                        <strong>ABTalks</strong> is a non-profit organization based in Ghaziabad, Uttar Pradesh, driven by a singular mission: to bridge the gap between academic learning and real-world employability.
+                    </p>
+                    <p>
+                        We believe that consistency is the ultimate currency in the tech industry. Through our flagship 60-Day Coding Challenge, we provide a structured, high-energy environment for college students to build, learn, and showcase their skills publicly.
+                    </p>
+                    <p>
+                        We are here to turn quiet coders into visible, confident creators. By committing to daily progress and sharing it with the world, our students don't just learn to code—they build a public portfolio that top recruiters simply can't ignore.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <p>&copy; <span class="text-accent-yellow">2026</span> ABTalks.</p>
+                <p class="sub-text">Ghaziabad, Uttar Pradesh</p>
+            </div>
+            <div class="social-links">
+                <a href="https://discord.gg/bUWygPMcT" target="_blank" rel="noopener noreferrer" class="social-btn liquid-glass-circle liquid-glass-discord btn-discord" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+                <a href="https://www.linkedin.com/company/abtalks-on-ai/" target="_blank" rel="noopener noreferrer" class="social-btn liquid-glass-circle liquid-glass-linkedin btn-linkedin" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/abtalksonai?igsh=eDczMzljbXA5bjM4" target="_blank" rel="noopener noreferrer" class="social-btn liquid-glass-circle liquid-glass-instagram btn-instagram" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="social-btn liquid-glass-circle liquid-glass-github btn-github" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://youtube.com/live/Tl7kFB_DXYc?feature=share" target="_blank" rel="noopener noreferrer" class="social-btn liquid-glass-circle liquid-glass-youtube btn-youtube" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div id="regModal" class="modal-overlay">
+        <div class="modal-content liquid-glass">
+            <button id="closeModalBtn" class="modal-close">&times;</button>
+            <form id="regForm" class="modal-form">
+                <div class="modal-header">
+                    <h2>Join the Cohort</h2>
+                    <p>Unlock consistency, points, and certification</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="formName" required placeholder="e.g. Shivam Gupta">
+                </div>
+                
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="formDob" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="formEmail" required placeholder="e.g. shivam@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="formCity" required placeholder="e.g. Ghaziabad">
+                </div>
+                
+                <button type="submit" class="btn btn-submit" style="width: 100%; border: none;">Confirm Cohort Registration <i class="fa-solid fa-check"></i></button>
+            </form>
+            
+            <div id="modalSuccess" class="modal-success" style="display: none;">
+                <div class="success-icon pulse-dot">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 id="successTitle">You're in!</h2>
+                <p id="successMessage">Your registration is complete. We've sent details to your email.</p>
+                <button id="successCloseBtn" class="btn btn-success-close">Get Started <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

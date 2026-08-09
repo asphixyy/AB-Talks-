@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABTalks - Challenge Day 12</title>
+    <meta name="description" content="View today's challenge description and submit your proof of work.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;400;600;700&family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .day-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 6rem;
+            position: relative;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        @media (min-width: 768px) {
+            .day-container {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+        }
+
+        /* Hero Challenge Card style inspired by content placement in attachment */
+        .challenge-hero-card {
+            background: linear-gradient(135deg, rgba(255, 94, 0, 0.08) 0%, rgba(10, 10, 10, 0.4) 100%);
+            border: 1px solid rgba(255, 94, 0, 0.2);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+            min-height: 520px;
+        }
+
+        .challenge-hero-card::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 94, 0, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .challenge-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .day-tag {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .day-tag i {
+            font-size: 1.2rem;
+            color: #22c55e;
+            filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.3));
+        }
+
+        .artwork-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        /* Abstract CSS overlapping loops from image */
+        .abstract-artwork {
+            display: flex;
+            gap: -8px;
+        }
+
+        .abstract-loop {
+            width: 48px;
+            height: 96px;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            border-radius: 100px;
+            margin-right: -16px;
+            transition: all 0.5s ease;
+            animation: pulseLoop 3s infinite ease-in-out;
+        }
+
+        .abstract-loop:nth-child(2) { animation-delay: 0.5s; border-color: rgba(255, 94, 0, 0.6); }
+        .abstract-loop:nth-child(3) { animation-delay: 1s; border-color: rgba(255, 255, 255, 0.45); }
+        .abstract-loop:nth-child(4) { animation-delay: 1.5s; border-color: rgba(255, 183, 0, 0.6); }
+
+        @keyframes pulseLoop {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50% { transform: translateY(-8px) scale(1.03); opacity: 1; filter: drop-shadow(0 0 12px rgba(255, 94, 0, 0.2)); }
+        }
+
+        .pill-category {
+            align-self: flex-start;
+            padding: 5px 12px;
+            background: rgba(255, 94, 0, 0.1);
+            border: 1px solid rgba(255, 94, 0, 0.25);
+            color: var(--accent-orange);
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 1.2rem;
+        }
+
+        .challenge-hero-card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-bottom: 0.8rem;
+        }
+
+        .challenge-hero-card p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero-metrics-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-metrics-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hero-metric-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-val {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-arrow {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #141414;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-arrow:hover {
+            background: var(--accent-orange);
+            color: #ffffff;
+            border-color: var(--accent-orange);
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(255, 94, 0, 0.4);
+        }
+
+        /* Submission Form design */
+        .submission-card {
+            background: rgba(10, 10, 10, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(25px);
+        }
+
+        .submission-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .submission-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .submission-form-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submission-form-group input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .submission-form-group input:focus {
+            border-color: rgba(255, 94, 0, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 12px rgba(255, 94, 0, 0.15);
+        }
+
+        .btn-submit-challenge {
+            background: linear-gradient(135deg, #ff5e00 0%, #ff8c00 50%, #ffb700 100%);
+            background-size: 200% auto;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 15px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
+
+        .btn-submit-challenge:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 94, 0, 0.45), 0 0 15px rgba(255, 183, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-submit-challenge:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Success alerts */
+        .toast-notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(34, 197, 94, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            z-index: 11000;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-notification.error {
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(239, 68, 68, 0.1);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="noise-bg"></div>
+
+    <!-- Navigation Header -->
+    <nav class="navbar liquid-glass-nav">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; padding: 0; outline: none;">
+            <img src="frontend/src/assets/fed689f4-3fea-42a8-9c6e-21e5546265e5.png" alt="ABTalks Logo" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px;">
+            <span><span class="logo-accent">AB</span>Talks</span>
+        </a>
+        <button id="navUserBtn" class="nav-cta" style="cursor: pointer; background: none; font-family: inherit;">Hey, Coder</button>
+    </nav>
+
+    <!-- Success Modal Overlay -->
+    <div id="toastSuccess" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 100000; padding: 1rem;">
+        <div class="modal-content liquid-glass" style="max-width: 400px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; border: 1px solid rgba(255,255,255,0.1);">
+            <div class="success-icon pulse-dot" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem; text-transform: none; letter-spacing: 0;">Submission Successful!</h2>
+            <p id="toastMessage" style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">Your proof of work has been registered. +25 Coins added to your wallet.</p>
+            <button id="successOkBtn" class="btn btn-submit" style="width: 100%; border: none; cursor: pointer; text-decoration: none;">Back to Dashboard <i class="fa-solid fa-house" style="margin-left: 6px;"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="day-container">
+        
+        <!-- Left: Hero Challenge card inspired by content placement in attachment -->
+        <section class="challenge-hero-card">
+            <div>
+                <div class="challenge-badge-row">
+                    <span class="day-tag">Day.TWENTY <i class="fa-solid fa-circle-check"></i></span>
+                    <span class="pill-category">DSA & Backend</span>
+                </div>
+
+                <div class="artwork-container">
+                    <div class="abstract-artwork">
+                        <div class="abstract-loop"></div>
+                        <div class="abstract-loop"></div>
+                        <div class="abstract-loop"></div>
+                        <div class="abstract-loop"></div>
+                    </div>
+                </div>
+
+                <h2>Build a CRUD REST API</h2>
+                <p id="challengeDesc">
+                    Design and deploy a structured REST API containing endpoints to write, read, update, and delete entries inside a local mock repository databases. Verify functionality using tools like Postman or Curl.
+                </p>
+            </div>
+
+            <div>
+                <div class="hero-metrics-divider"></div>
+                <div class="hero-metrics-row">
+                    <div class="hero-metric-item">
+                        <span class="metric-val" id="completedMetric">20/60</span>
+                        <span class="metric-label">Completed</span>
+                    </div>
+                    <div class="hero-metric-item">
+                        <span class="metric-val">3h</span>
+                        <span class="metric-label">Duration</span>
+                    </div>
+                    <div class="action-arrow" onclick="window.location.href='dashboard.html'" title="Return to Dashboard">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right: Submit Form & Progress logs -->
+        <section class="submission-card" id="submissionCardArea">
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; margin-bottom: 8px;">
+                <h3>Submit Challenge Proof</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">Earn 25 coins upon verified submission</p>
+            </div>
+
+            <form id="challengeSubmitForm" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div class="submission-form-group">
+                    <label for="gitLink">GitHub Repository / Commit URL</label>
+                    <input type="url" id="gitLink" placeholder="e.g. https://github.com/shivam/day20" required>
+                </div>
+
+                <div class="submission-form-group">
+                    <label for="linkedinLink">LinkedIn Post URL</label>
+                    <input type="url" id="linkedinLink" placeholder="e.g. https://linkedin.com/posts/shivam-day20" required>
+                </div>
+
+                <button type="submit" class="btn-submit-challenge">
+                    Submit Challenge Proof <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 1.25rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Verification Checklist</span>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: rgba(255,255,255,0.75);">
+                    <i class="fa-solid fa-circle-nodes text-accent-orange"></i> Code committed publicly
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: rgba(255,255,255,0.75);">
+                    <i class="fa-solid fa-hashtag text-accent-yellow"></i> Shared with #ABTalks60Days
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Bottom Liquid Glass Navbar -->
+    <div class="bottom-nav-container">
+        <div ref="containerRef" class="bottom-nav-dock" style="position: relative;">
+            <div id="navIndicator" class="bottom-nav-indicator" style="opacity: 0; width: 0px;"></div>
+            
+            <!-- Dashboard Link -->
+            <a href="dashboard.html" class="bottom-nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span class="bottom-nav-label">Dashboard</span>
+            </a>
+            
+            <!-- Challenge Link -->
+            <a href="day.html" class="bottom-nav-item active">
+                <i class="fa-solid fa-calendar-day"></i>
+                <span class="bottom-nav-label">Challenge</span>
+            </a>
+
+            <!-- Rewards Link -->
+            <a href="rewards.html" class="bottom-nav-item">
+                <i class="fa-solid fa-dollar-sign"></i>
+                <span class="bottom-nav-label">Rewards</span>
+            </a>
+            
+            <!-- Account Details Button -->
+            <button id="bottomAccountBtn" class="bottom-nav-item logout">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="bottom-nav-label">Account</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountModal" class="modal-overlay">
+        <div class="modal-content liquid-glass" style="max-width: 400px; text-align: left;">
+            <button id="closeAccountModalBtn" class="modal-close">&times;</button>
+            <div class="modal-header" style="margin-bottom: 24px;">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-user-gear text-accent-orange"></i> Account Details
+                </h2>
+                <p>Verify your cohort membership credentials</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: rgba(255, 255, 255, 0.8);">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Full Name</span>
+                    <strong style="color: #ffffff; font-size: 1.05rem;" id="accName">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Date of Birth</span>
+                    <strong style="color: #ffffff;" id="accDob">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Email Address</span>
+                    <strong style="color: #ffffff;" id="accEmail">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">City / Hub</span>
+                    <strong style="color: #ffffff;" id="accCity">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Program Track</span>
+                    <strong style="color: var(--accent-orange);">Software Development (SDE)</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check registration auth status
+            const registeredUser = localStorage.getItem('registeredUser');
+            if (!registeredUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Set greeting
+            const navUserBtn = document.getElementById('navUserBtn');
+            if (navUserBtn) {
+                navUserBtn.textContent = `Hey, ${registeredUser.trim().split(' ')[0]}`;
+                navUserBtn.addEventListener('click', () => {
+                    window.location.href = 'dashboard.html';
+                });
+            }
+
+            // Sync metrics display on page load
+            const updateMetrics = () => {
+                const hasSubmittedToday = localStorage.getItem('day20Submitted') === 'true';
+                let completedDays = hasSubmittedToday ? 21 : 20;
+                document.getElementById('completedMetric').textContent = `${completedDays}/60`;
+                
+                if (hasSubmittedToday) {
+                    const desc = document.getElementById('challengeDesc');
+                    if (desc) desc.textContent = "You have completed today's challenge. Come back tomorrow!";
+                    
+                    const submissionCardArea = document.getElementById('submissionCardArea');
+                    if (submissionCardArea) {
+                        submissionCardArea.innerHTML = `
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 16px; padding: 1rem 0;">
+                                <div class="success-icon pulse-dot" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 0.5rem;">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; color: #ffffff; text-transform: none; letter-spacing: 0;">Milestone Completed!</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; max-width: 240px; margin: 0 auto;">
+                                    Today's challenge proof of work has been registered. Come back tomorrow!
+                                </p>
+                                <button onclick="window.location.href='dashboard.html'" class="btn btn-submit" style="width: 100%; border: none; padding: 12px; cursor: pointer; font-size: 0.85rem; margin-top: 8px;">Go back to Dashboard</button>
+                            </div>
+                        `;
+                    }
+                }
+            };
+            updateMetrics();
+
+            // Floating Bottom Nav Sweep Animation
+            const navIndicator = document.getElementById('navIndicator');
+            const navItems = document.querySelectorAll('.bottom-nav-item');
+            
+            function updateIndicator(activeEl) {
+                if (navIndicator && activeEl) {
+                    navIndicator.style.opacity = '1';
+                    navIndicator.style.left = activeEl.offsetLeft + 'px';
+                    navIndicator.style.width = activeEl.offsetWidth + 'px';
+                    if (activeEl.classList.contains('logout')) {
+                        navIndicator.style.background = '#ffffff';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.12)';
+                    } else {
+                        navIndicator.style.background = '#ffffff';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.12)';
+                    }
+                }
+            }
+
+            // Init active position
+            const activeItem = document.querySelector('.bottom-nav-item.active');
+            if (activeItem) {
+                setTimeout(() => updateIndicator(activeItem), 50);
+                if (document.fonts) {
+                    document.fonts.ready.then(() => {
+                        updateIndicator(activeItem);
+                    });
+                }
+            }
+
+            // Click handling with sweep redirect delay
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (item.tagName === 'A') {
+                        e.preventDefault();
+                        const href = item.getAttribute('href');
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 350);
+                    } else if (item.id === 'bottomAccountBtn') {
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            // Populate values
+                            document.getElementById('accName').textContent = localStorage.getItem('registeredUser') || 'Shivam Gupta';
+                            
+                            const dob = localStorage.getItem('userDob');
+                            if (dob) {
+                                const d = new Date(dob);
+                                document.getElementById('accDob').textContent = d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                            } else {
+                                document.getElementById('accDob').textContent = '15th August 2004';
+                            }
+                            
+                            document.getElementById('accEmail').textContent = localStorage.getItem('userEmail') || 'shivam@gmail.com';
+                            document.getElementById('accCity').textContent = localStorage.getItem('userCity') || 'Ghaziabad';
+                            
+                            const accountModal = document.getElementById('accountModal');
+                            if (accountModal) accountModal.classList.add('active');
+                        }, 350);
+                    }
+                });
+            });
+
+            // Close Account Modal handlers
+            const accountModal = document.getElementById('accountModal');
+            const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+            if (closeAccountModalBtn) {
+                closeAccountModalBtn.addEventListener('click', () => {
+                    if (accountModal) accountModal.classList.remove('active');
+                });
+            }
+            if (accountModal) {
+                accountModal.addEventListener('click', (e) => {
+                    if (e.target === accountModal) {
+                        accountModal.classList.remove('active');
+                    }
+                });
+            }
+
+            // Challenge Submission Handling
+            const challengeSubmitForm = document.getElementById('challengeSubmitForm');
+            const toastSuccess = document.getElementById('toastSuccess');
+            const toastMessage = document.getElementById('toastMessage');
+
+            if (challengeSubmitForm) {
+                challengeSubmitForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const gitLink = document.getElementById('gitLink').value;
+                    const linkedinLink = document.getElementById('linkedinLink').value;
+
+                    // Increment stats in LocalStorage
+                    let coins = parseInt(localStorage.getItem('userCoins') || '150');
+                    let completedDays = parseInt(localStorage.getItem('completedDaysCount') || '20');
+
+                    // Check if already submitted today to prevent double submits
+                    const hasSubmittedToday = localStorage.getItem('day20Submitted') === 'true';
+
+                    if (!hasSubmittedToday) {
+                        coins += 25; // Award 25 coins
+                        completedDays = 21; // Set total completed count to 21
+                        
+                        localStorage.setItem('userCoins', coins.toString());
+                        localStorage.setItem('completedDaysCount', completedDays.toString());
+                        localStorage.setItem('day20Submitted', 'true');
+                        
+                        // Mark task checklist complete on Dashboard
+                        const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{"commit":false,"post":false,"dsa":false}');
+                        completedTasks.commit = true;
+                        completedTasks.post = true;
+                        localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+
+                        toastMessage.innerHTML = 'Proof of work submitted! <strong>+25 Coins</strong> added to wallet.';
+                    } else {
+                        toastMessage.innerHTML = 'You have already submitted today\'s proof of work!';
+                    }
+
+                    updateMetrics();
+
+                    // Show success modal
+                    if (toastSuccess) {
+                        toastSuccess.style.display = 'flex';
+                    }
+
+                    // Reset form fields
+                    challengeSubmitForm.reset();
+                });
+            }
+
+            // Wire Success Modal button to return to dashboard
+            const successOkBtn = document.getElementById('successOkBtn');
+            if (successOkBtn) {
+                successOkBtn.addEventListener('click', () => {
+                    window.location.href = 'dashboard.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABTalks - Rewards Center</title>
+    <meta name="description" content="Redeem your earned coins for swags, stickers, and developer mentorship.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;400;600;700&family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .rewards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 4rem;
+            position: relative;
+        }
+
+        .rewards-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .rewards-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .rewards-header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .points-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 224, 0, 0.1);
+            border: 1px solid rgba(255, 224, 0, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1.4rem;
+            color: var(--accent-yellow);
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px rgba(255, 224, 0, 0.15);
+            animation: pointsPulse 2s infinite ease-in-out;
+        }
+
+        .alert-box {
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #a7f3d0;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .rewards-catalog {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .reward-item-card {
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            aspect-ratio: 1 / 1;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: none !important;
+            background: rgba(20, 20, 20, 0.6) !important;
+        }
+
+        .reward-item-card:hover {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Redeemable option: highlighted glowing border */
+        .reward-item-card.redeemable {
+            border: 1px solid rgba(255, 224, 0, 0.4) !important;
+            box-shadow: 0 0 15px rgba(255, 224, 0, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
+            background: linear-gradient(135deg, rgba(255, 224, 0, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%) !important;
+        }
+
+        .reward-item-card.redeemable:hover {
+            border-color: rgba(255, 224, 0, 0.8) !important;
+            box-shadow: 0 0 25px rgba(255, 224, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2) !important;
+            transform: translateY(-3px);
+        }
+
+        .reward-item-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .reward-item-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .reward-item-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            transition: color 0.3s ease;
+        }
+
+        .reward-item-card:hover h3 {
+            color: var(--accent-yellow);
+        }
+
+        .reward-item-card p {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            line-height: 1.35;
+        }
+
+        .reward-item-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .reward-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .btn-redeem {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-redeem.enabled {
+            background: var(--accent-orange);
+            color: #ffffff;
+        }
+
+        .btn-redeem.enabled:hover {
+            box-shadow: 0 0 12px rgba(255, 94, 0, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-redeem.disabled {
+            background: transparent !important;
+            border: none !important;
+            color: #ef4444 !important;
+            font-weight: 700;
+            cursor: not-allowed;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 0 !important;
+            font-size: 0.75rem;
+        }
+
+        /* Dropdown style */
+        .logo-dropdown {
+            display: none; 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            margin-top: 14px; 
+            width: 200px; 
+            background: #0c0c0c; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 16px; 
+            padding: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            z-index: 99999; 
+            flex-direction: column; 
+            gap: 4px; 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 14px;
+        }
+
+        .logo-dropdown.active {
+            display: flex !important;
+        }
+
+        .dropdown-item {
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 10px; 
+            border-radius: 12px; 
+            text-decoration: none; 
+            color: rgba(255,255,255,0.7); 
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .dropdown-item.active {
+            color: #ffffff; 
+            font-weight: 600; 
+            background: var(--accent-orange);
+            box-shadow: 0 0 12px rgba(255,94,0,0.3);
+        }
+
+        @keyframes pointsPulse {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 224, 0, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 224, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 224, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 224, 0, 0.7);
+                transform: scale(1.02);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow-orb orb-primary"></div>
+        <div class="glow-orb orb-secondary"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="navbar liquid-glass-nav">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; padding: 0; outline: none;">
+            <img src="frontend/src/assets/fed689f4-3fea-42a8-9c6e-21e5546265e5.png" alt="ABTalks Logo" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px;">
+            <span><span class="logo-accent">AB</span>Talks</span>
+        </a>
+        <button id="navUserBtn" class="nav-cta" style="cursor: pointer; background: none; font-family: inherit;">Hey, Coder</button>
+    </nav>
+
+    <!-- Floating Bottom Liquid Glass Navbar -->
+    <div class="bottom-nav-container">
+        <div class="bottom-nav-dock">
+            <div id="navIndicator" class="bottom-nav-indicator"></div>
+            
+            <!-- Dashboard Link -->
+            <a href="dashboard.html" class="bottom-nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span class="bottom-nav-label">Dashboard</span>
+            </a>
+            
+            <!-- Challenge Link -->
+            <a href="day.html" class="bottom-nav-item">
+                <i class="fa-solid fa-calendar-day"></i>
+                <span class="bottom-nav-label">Challenge</span>
+            </a>
+
+            <!-- Rewards Link -->
+            <a href="rewards.html" class="bottom-nav-item active">
+                <i class="fa-solid fa-dollar-sign"></i>
+                <span class="bottom-nav-label">Rewards</span>
+            </a>
+            
+            <!-- Account Details Button -->
+            <button id="bottomAccountBtn" class="bottom-nav-item logout">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="bottom-nav-label">Account</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Rewards Content Area -->
+    <div class="rewards-container">
+        
+        <!-- Header -->
+        <div class="rewards-header liquid-glass">
+            <div>
+                <h1>ABTalks Rewards Center</h1>
+                <p>Redeem your hard-earned coins for official swags and developer resources.</p>
+            </div>
+            <div class="points-badge">
+                <i class="fa-solid fa-coins"></i>
+                <span id="pointsCounter">150 AB Coins</span>
+            </div>
+        </div>
+
+        <!-- Success/Error Alerts -->
+        <div id="successAlert" class="alert-box alert-success">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="successText"></span>
+        </div>
+        <div id="errorAlert" class="alert-box alert-error">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Rewards Catalog -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; color: #ffffff;">Available Rewards</h2>
+            <div class="rewards-catalog" id="rewardsCatalog">
+                <!-- Populated dynamically by JS to handle afford status -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check auth status
+            const registeredUser = localStorage.getItem('registeredUser');
+            if (!registeredUser) {
+                localStorage.setItem('promptRegister', 'true');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const firstName = registeredUser.trim().split(' ')[0];
+            const navUserBtn = document.getElementById('navUserBtn');
+            if (navUserBtn) navUserBtn.textContent = `Hey, ${firstName}`;
+
+            const logoutHandler = () => {
+                localStorage.removeItem('registeredUser');
+                localStorage.removeItem('userCoins');
+                localStorage.removeItem('completedTasks');
+                window.location.href = 'index.html';
+            };
+            
+            const bottomLogoutBtn = document.getElementById('bottomLogoutBtn');
+            
+            // Floating Bottom Nav Sweep Animation
+            const navIndicator = document.getElementById('navIndicator');
+            const navItems = document.querySelectorAll('.bottom-nav-item');
+            
+            function updateIndicator(activeEl) {
+                if (navIndicator && activeEl) {
+                    navIndicator.style.left = activeEl.offsetLeft + 'px';
+                    navIndicator.style.width = activeEl.offsetWidth + 'px';
+                    if (activeEl.classList.contains('logout')) {
+                        navIndicator.style.background = '#ef4444';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(239, 68, 68, 0.3)';
+                    } else {
+                        navIndicator.style.background = '#ffffff';
+                        navIndicator.style.boxShadow = '0 8px 16px rgba(255, 255, 255, 0.12)';
+                    }
+                }
+            }
+
+            // Init active position
+            const activeItem = document.querySelector('.bottom-nav-item.active');
+            if (activeItem) {
+                setTimeout(() => updateIndicator(activeItem), 50);
+                if (document.fonts) {
+                    document.fonts.ready.then(() => {
+                        updateIndicator(activeItem);
+                    });
+                }
+            }
+
+            // Click handling with sweep redirect delay
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (item.tagName === 'A') {
+                        e.preventDefault();
+                        const href = item.getAttribute('href');
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 350);
+                    } else if (item.id === 'bottomAccountBtn') {
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        updateIndicator(item);
+                        setTimeout(() => {
+                            // Populate values
+                            document.getElementById('accName').textContent = localStorage.getItem('registeredUser') || 'Shivam Gupta';
+                            
+                            // Format date nicely
+                            const dob = localStorage.getItem('userDob');
+                            if (dob) {
+                                const d = new Date(dob);
+                                document.getElementById('accDob').textContent = d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                            } else {
+                                document.getElementById('accDob').textContent = '15th August 2004';
+                            }
+                            
+                            document.getElementById('accEmail').textContent = localStorage.getItem('userEmail') || 'shivam@gmail.com';
+                            document.getElementById('accCity').textContent = localStorage.getItem('userCity') || 'Ghaziabad';
+                            
+                            // Open Modal
+                            const accountModal = document.getElementById('accountModal');
+                            if (accountModal) accountModal.classList.add('active');
+                        }, 350);
+                    }
+                });
+            });
+
+            // Close Account Modal handlers
+            const accountModal = document.getElementById('accountModal');
+            const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+            if (closeAccountModalBtn) {
+                closeAccountModalBtn.addEventListener('click', () => {
+                    if (accountModal) accountModal.classList.remove('active');
+                });
+            }
+            if (accountModal) {
+                accountModal.addEventListener('click', (e) => {
+                    if (e.target === accountModal) {
+                        accountModal.classList.remove('active');
+                    }
+                });
+            }
+
+            // Points balance and catalog
+            const pointsCounter = document.getElementById('pointsCounter');
+            const rewardsCatalog = document.getElementById('rewardsCatalog');
+            const successAlert = document.getElementById('successAlert');
+            const successText = document.getElementById('successText');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorText = document.getElementById('errorText');
+
+            let coins = parseInt(localStorage.getItem('userCoins') || '150');
+            pointsCounter.textContent = `${coins} AB Coins`;
+
+            const rewardsStore = [
+                { id: 'stickers', title: 'ABTalks Custom Sticker Pack', cost: 100, icon: 'fa-note-sticky', desc: 'Pack of 5 holographic developer stickers for your laptop.' },
+                { id: 'theme', title: 'Premium Dev Theme Pack', cost: 50, icon: 'fa-palette', desc: 'Custom high-contrast VS Code and terminal themes.' },
+                { id: 'discord', title: 'Exclusive Discord VIP Role', cost: 30, icon: 'fa-hashtag', desc: 'Unlock custom name colors and VIP channel access.' },
+                { id: 'cert', title: 'Verified Completion Certificate', cost: 200, icon: 'fa-file-signature', desc: 'Verifiable credentials for your resume and LinkedIn.' },
+                { id: 'sheet', title: 'System Design Cheat Sheet', cost: 80, icon: 'fa-diagram-project', desc: 'High-res reference sheet for system architecture.' },
+                { id: 'resume', title: 'Resume Review & Feedback', cost: 150, icon: 'fa-address-card', desc: 'Detailed async review & formatting tips by a recruiter.' },
+                { id: 'mentor', title: '1-on-1 Mock Interview Session', cost: 350, icon: 'fa-user-tie', desc: '45-min mock session with a MAANG engineer.' },
+                { id: 'hoodie', title: 'Official ABTalks Developer Hoodie', cost: 500, icon: 'fa-shirt', desc: 'Premium, heavy-blend black hoodie with neon branding.' }
+            ];
+
+            const renderCatalog = () => {
+                rewardsCatalog.innerHTML = '';
+                rewardsStore.forEach(item => {
+                    const card = document.createElement('div');
+                    const canAfford = coins >= item.cost;
+                    card.className = 'reward-item-card liquid-glass' + (canAfford ? ' redeemable' : '');
+                    
+                    card.innerHTML = `
+                        <div class="reward-item-header">
+                            <div class="reward-item-icon">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                            <div>
+                                <h3>${item.title}</h3>
+                                <p>${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="reward-item-footer">
+                            <div class="reward-item-meta">
+                                <span style="color: var(--accent-yellow);"><i class="fa-solid fa-coins"></i> ${item.cost} Coins</span>
+                                <span style="color: var(--text-secondary);">${canAfford ? 'Available' : (item.cost - coins) + ' more required'}</span>
+                            </div>
+                            <button class="btn-redeem ${canAfford ? 'enabled' : 'disabled'}">${canAfford ? 'Redeem Swag' : 'Grind more champ!'}</button>
+                        </div>
+                    `;
+                    
+                    if (canAfford) {
+                        const redeemBtn = card.querySelector('.btn-redeem');
+                        redeemBtn.addEventListener('click', () => {
+                            coins -= item.cost;
+                            localStorage.setItem('userCoins', coins.toString());
+                            pointsCounter.textContent = `${coins} AB Coins`;
+                            
+                            successText.textContent = `Successfully redeemed: ${item.title}! Check your email for claim details.`;
+                            successAlert.style.display = 'flex';
+                            errorAlert.style.display = 'none';
+                            
+                            setTimeout(() => {
+                                successAlert.style.display = 'none';
+                            }, 5000);
+                            
+                            renderCatalog(); // re-render to update disabled button state
+                        });
+                    }
+                    
+                    rewardsCatalog.appendChild(card);
+                });
+            };
+
+            renderCatalog();
+        });
+    </script>
+
+    <!-- Account Details Modal -->
+    <div id="accountModal" class="modal-overlay">
+        <div class="modal-content liquid-glass" style="max-width: 400px; text-align: left;">
+            <button id="closeAccountModalBtn" class="modal-close">&times;</button>
+            <div class="modal-header" style="margin-bottom: 24px;">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-user-gear text-accent-orange"></i> Account Details
+                </h2>
+                <p>Verify your cohort membership credentials</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: rgba(255, 255, 255, 0.8);">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Full Name</span>
+                    <strong style="color: #ffffff; font-size: 1.05rem;" id="accName">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Date of Birth</span>
+                    <strong style="color: #ffffff;" id="accDob">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Email Address</span>
+                    <strong style="color: #ffffff;" id="accEmail">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">City / Hub</span>
+                    <strong style="color: #ffffff;" id="accCity">-</strong>
+                </div>
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;">Program Track</span>
+                    <strong style="color: var(--accent-orange);">Software Development (SDE)</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
