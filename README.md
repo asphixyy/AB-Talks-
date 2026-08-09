@@ -40,6 +40,35 @@ The workspace contains both **a static page-based frontend** (Vanilla HTML/CSS/J
 
 ---
 
+## 🔄 User Lifecycle & State Persistence
+
+This application implements a complete state machine using local storage keys to ensure that a student's session remains consistent across reloads:
+
+```
+[Onboarding Land Page]  --->  [Registers Name/Track]  --->  [Coins Init to 150]
+                                                                    |
+                                                                    v
+[Challenge Day Submit]  <---  [Checklist Activities]  <---  [Dashboard Hub]
+         |
+         +--> (Validates urls -> Awards +25 Coins -> Sets Completed Count to 21)
+         |
+         v
+[Rewards Catalog Shop]  --->  (Redeems Items -> Deducts Coins Balance)
+                                                                    |
+                                                                    v
+[Log Out Button]        --->  (Wipes LocalStorage -> Resets Metrics back to 20)
+```
+
+### Storage Key Registry:
+* `registeredUser`: Holds the user's full name.
+* `userDob` / `userEmail` / `userCity`: Account credential configuration values.
+* `userCoins`: Current wallet points balance (initializes to 150, adds 25 on task submit, deducts on reward checkout).
+* `completedDaysCount`: Daily milestones completion marker (advances from 20 to 21).
+* `day20Submitted`: Boolean flag tracking challenge validation status.
+* `completedTasks`: Syncs the checklist checkboxes on the dashboard panel.
+
+---
+
 ## 🛠️ Technology Stack
 
 ### Static Pages Component
@@ -127,3 +156,13 @@ This repository is optimized for one-click Vercel deployments.
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. **Click Deploy**: Vercel will install dependencies, build the production bundle, and generate a live URL.
+
+### Handling Client-Side Routing refreshes on Vercel:
+To prevent `404 Not Found` errors when directly refreshing routes like `/dashboard` or `/day/20` on Vercel, a `vercel.json` file can be added to the project directory with rewrites to index:
+
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+```
+Vercel's build server reads this configuration to cleanly route all sub-paths to Vite's root SPA index resolver.
