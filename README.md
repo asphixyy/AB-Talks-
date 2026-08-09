@@ -4,6 +4,8 @@ A highly interactive, gamified, and premium student progress-tracking portal bui
 
 The workspace contains both **a static page-based frontend** (Vanilla HTML/CSS/JS) and **a dynamic single-page React app** (Vite + Tailwind + Framer Motion) to support various user deployment configurations.
 
+** LIVE PROJECT LINK DEPLOYMENT-** https://ab-talks-reborn-if18.vercel.app/
+
 ---
 
 ## 🌟 Key Features
